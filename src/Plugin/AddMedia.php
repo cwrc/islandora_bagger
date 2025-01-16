@@ -114,9 +114,9 @@ class AddMedia extends AbstractIbPlugin
                             'verify' => $this->settings['verify_ca']
                         ]);
                         $file_body = $file_response->getBody();
-                        while (!$file_body->eof()) {
+                        do {
                             file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
-                        }
+                        } while (!$file_body->eof());
                         $bag->addFile($temp_file_path, $this->settings['media_file_directories'] . basename($temp_file_path));
                     }
                 }

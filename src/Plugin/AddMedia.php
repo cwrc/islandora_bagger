@@ -63,7 +63,7 @@ class AddMedia extends AbstractIbPlugin
             // @todo: Get the media source in a more robust way.
             $media_source_field = $this->getMediaSourceFieldName($media);
             if (!empty($media['field_media_use']) && count($media['field_media_use'])) {
-                foreach ($media['field_media_use'] as $term) {
+                foreach ($media['field_media_use'] as $term_index => $term) {
                     if (count($this->settings['drupal_media_tags']) == 0 ||
                             in_array($term['url'], $this->settings['drupal_media_tags'])) {
                         if (isset($media['field_media_image'])) {
@@ -101,23 +101,35 @@ class AddMedia extends AbstractIbPlugin
                             $file_use_list .= $filename . "\t" . $term_external_uri . PHP_EOL;
                         }
 
-                        $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
-                        // Fetch file and save it to $bag_temp_dir with its original filename.
-                        // @todo: Determine what to do if the file already exists.
+                        # If multiple media use terms applied to the same media file, only add file once to the Bag
+                        # prevent a file already added error by the Bag logic
+                        if ($term_index == 0) {
+                            $temp_file_path = $bag_temp_dir . DIRECTORY_SEPARATOR . $filename;
+                            // Fetch file and save it to $bag_temp_dir with its original filename.
+                            // @todo: Determine what to do if the file already exists.
 
 
-                        $file_client = new \GuzzleHttp\Client();
-                        $file_response = $file_client->get($file_url, ['stream' => true,
-                            'timeout' => $this->settings['http_timeout'],
-                            'headers' => ['Authorization' => 'Bearer '  . $token],
-                            'connect_timeout' => $this->settings['http_timeout'],
-                            'verify' => $this->settings['verify_ca']
-                        ]);
-                        $file_body = $file_response->getBody();
-                        do {
-                            file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
-                        } while (!$file_body->eof());
-                        $bag->addFile($temp_file_path, $this->settings['media_file_directories'] . basename($temp_file_path));
+                            $file_client = new \GuzzleHttp\Client();
+                            $file_response = $file_client->get($file_url, ['stream' => true,
+                                'timeout' => $this->settings['http_timeout'],
+                                'headers' => ['Authorization' => 'Bearer '  . $token],
+                                'connect_timeout' => $this->settings['http_timeout'],
+                                'verify' => $this->settings['verify_ca']
+                            ]);
+                            $file_body = $file_response->getBody();
+                            do {
+                                file_put_contents($temp_file_path, $file_body->read(2048), FILE_APPEND);
+                            } while (!$file_body->eof());
+                            $bag->addFile($temp_file_path, $this->settings['media_file_directories'] . basename($temp_file_path));
+                        }
+                        else {
+                            $this->logger->info(
+                                "Skipping: multiple media use terms [$term_index] applied to the same media file, only add once to the Bag.",
+                                array(
+                                    'media' => $media,
+                                )
+                            );
+                        }
                     }
                 }
             }

@@ -16,6 +16,7 @@ class GetQueueCommand extends Command
     private $application_directory;
     private $logger;
     private $params;
+    private $queue_path;
 
     public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
     {
@@ -24,6 +25,9 @@ class GetQueueCommand extends Command
 
         // Set log output path in config/packages/{environment}/monolog.yaml
         $this->logger = $logger;
+
+        // queue path
+        $this->queue_path = null;
 
         $this->application_directory = dirname(__DIR__, 2);
 
@@ -39,14 +43,14 @@ class GetQueueCommand extends Command
             ->addOption('output_format', 'json', InputOption::VALUE_REQUIRED, 'Output format. Defaults to "json". Must be either "csv" or "json".');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->queue_path = $input->getOption('queue');
         $output_format = $input->getOption('output_format');
 
         if (!file_exists($this->queue_path)) {
-            $this->logger->info("Queue file not found", $details);
-            return;
+            $this->logger->info("Queue file not found: %s", $this->queue_path);
+            return Command::FAILURE;
         }
 
         $entries = file($this->queue_path, FILE_IGNORE_NEW_LINES);

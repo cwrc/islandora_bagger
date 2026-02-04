@@ -41,9 +41,9 @@ class CreateBagCommand extends Command
           ->addOption('token', null, InputOption::VALUE_OPTIONAL, 'JWT token for authentication.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $ret;
+        $ret = Command::FAILURE;
 
         $io = new SymfonyStyle($input, $output);
 

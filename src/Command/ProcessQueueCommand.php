@@ -41,7 +41,7 @@ class ProcessQueueCommand extends Command
                 'If omitted, all entries will be processed.', 0);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->queue_path = $input->getOption('queue');
         $num_entries_to_process = $input->getOption('entries');

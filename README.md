@@ -159,6 +159,7 @@ The resulting Bag would look like this:
 │   ├── media.jsonld
 │   ├── node.json
 │   ├── node.jsonld
+│   ├── node_json_api.json (JSON:API with includes for paragraphs and taxonomy terms)
 │   ├── metadata
 │   │   └── MODS.xml
 │   ├── metadata.csv

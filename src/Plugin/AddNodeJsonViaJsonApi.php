@@ -61,9 +61,11 @@ class AddNodeJsonViaJsonApi extends AbstractIbPlugin
                 // Should the type comparison be dynamic? For now, this is the only paragraph type with relationships, so we can hardcode it.
                 // Otherwise, add a config setting like some other plugins.
                 foreach ($included_entity['relationships'] as $relationship_name => $relationship) {
-                    if ($relationship_name !== '')
-                    {
-                        $query_includes[] = $included_entity['attributes']['parent_field_name'] . '.' . $relationship_name;
+                    if ($relationship_name !== '') {
+                        $include_str = $included_entity['attributes']['parent_field_name'] . '.' . $relationship_name;
+                        if (!in_array($include_str, $query_includes)) {
+                            $query_includes[] = $include_str;
+                        }
                     }
                 }
             }
@@ -73,8 +75,26 @@ class AddNodeJsonViaJsonApi extends AbstractIbPlugin
         $query_includes_string = implode(',',$query_includes);
         $response = $this->getNodeJsonApi($url, ['include' => $query_includes_string], $token);
         if ($response) {
-            $bag->createFile($response, 'node_json_api.json');
+            $bag->createFile($response, 'node_json_api_translation_default.json');
         }
+
+        // Get translations, if present
+        // Ignore the default (no langnode in the URL) and captured above.
+        $url = $this->settings['drupal_base_url'] . '/api/translations/node/' . $nid;
+        $response = $this->getNodeJsonApi($url, [], $token);
+        $response_json = json_decode($response, true);
+        foreach ($response_json ?? [] as $translation) {
+            if (isset($translation['default_langcode']) && $translation['default_langcode'] !== "True") {
+                if (isset($translation['langcode'])) {
+                    $langcode = $translation['langcode'];
+                    $url = $this->settings['drupal_base_url'] . '/jsonapi/node/' . $node_type . '/' . $uuid;
+                    $response = $this->getNodeJsonApi($url, ['include' => $query_includes_string], $token);
+                    if ($response) {
+                        $bag->createFile($response, "node_json_api_translation_$langcode.json");
+                    }
+                }
+            }
+        }   
 
         return $bag;
     }

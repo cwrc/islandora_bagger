@@ -46,7 +46,7 @@ class AddNodeJsonTranslation extends AbstractIbPlugin
                     $url = $this->settings['drupal_base_url'] . '/' . $langcode . '/node/' . $nid;
                     $response = $this->getNodeJsonApi($url, ['_format' => 'json'], $token);
                     if ($response) {
-                        $bag->createFile($response, "node_translation_$langcode.json");
+                        $bag->createFile($response, "node-$langcode.json");
                     }
                 }
             }

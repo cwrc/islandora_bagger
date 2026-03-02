@@ -36,7 +36,7 @@ class AddGroupJson extends AbstractIbPlugin
     {
 
         // Get translations, if present
-        $url = $this->settings['drupal_base_url'] . '/views/preservation_entity_drupal_group/node/' . $nid;
+        $url = $this->settings['drupal_base_url'] . '/views/preservation/v2/show_drupal_groups/node/' . $nid;
         $response = $this->getNodeJsonApi($url, [], $token);
         if ($response) {
             $bag->createFile($response, "node_group_metadata.json");

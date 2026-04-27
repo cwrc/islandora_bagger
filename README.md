@@ -139,6 +139,10 @@ templated_output_filename: 'metadata/MODS.xml'
 # as part of the filename.
 csv_output_filename: 'metadata.csv'
 
+# Used by the 'AddMediaFile' plugin.
+# check_media_file_hashes will enable checking the file hash (from Drupal filehash module)
+# of the downloaded Media versus the has value in the metadata
+check_media_file_hashes: true
 
 ####################
 # Post-Bag scripts #
@@ -302,9 +306,13 @@ The following plugins are bundled with Islandora Bagger:
 * AddNodeJson: Adds the Drupal JSON representation of the node, specifically, the response to a request to `/node/1234?_format=json`.
 * AddNodeJsonld: Adds the Drupal JSON-LD representation of the node, specifically, the response to a request to `/node/1234?_format=jsonld`.
 * AddFedoraTurtle: Adds the Fedora Turtle RDF representation of the node.
+* AddGroupJson: Adds the Drupal Group information in JSON format for the resource
 * AddMedia: Adds media files, such as the Original File, Preservation Master, etc., to the Bag. The specific files added are identified by the relevant tags from the "Islandora Media Use" vocabulary listed in the `drupal_media_tags` configuration option.
+* AddMediaFile: Enhanced version of AddMedia that reuires drupal/filehash module to test hash of the media file download. Adds media files, such as the Original File, Preservation Master, etc., to the Bag. The specific files added are identified by the relevant tags from the "Islandora Media Use" vocabulary listed in the `drupal_media_tags` configuration option.
 * AddMediaJson: Adds the Drupal JSON representation of the node's media list, specifically, the response to a request to `/node/1234/media?_format=json`.
 * AddMediaJsonld: Adds the Drupal JSON-LD representation of the node's media list, specifically, the response to a request to `/node/1234/media?_format=jsonld`.
+* AddNodeJsonTranslation: Adds the Drupal Node metadata for all translations.
+* AddNodeJsonViaJsonApi: Adds the Drupal Node metadata via the Drupal JSON:API to capture the taxonomy terms and Drupal Paragraph relationship contents.
 * AddFileFromTemplate: Adds a file generated from a Twig template using data from the node's JSON. Within the template, the data is represented as a PHP array. Basic sample MODS and DC templates are included.
 * AddFile: Adds files listed in the the `files_to_add` configuration option, e.g., `files_to_add: ['/tmp/file1.txt', '/tmp/file2.txt']`.
 * AddNodeCsv: Adds a CSV file generated from node field data.

@@ -97,7 +97,8 @@ class AddMedia extends AbstractIbPlugin
 
                         if ($this->settings['include_media_use_list']) {
                             $term_info = $this->fetchTermInfo($term['url'], $token);
-                            $term_external_uri = $term_info['field_external_uri'][0]['uri'];
+                            # 'field_external_uri might not be present on all terms, so use null coalescing operator to avoid undefined index notice
+                            $term_external_uri = $term_info['field_external_uri'][0]['uri'] ?? 'Unspecified';
                             $file_use_list .= $filename . "\t" . $term_external_uri . PHP_EOL;
                         }
 

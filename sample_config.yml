@@ -58,7 +58,7 @@ bag-info:
 
 # Required. Register plugins to populate bag-info.txt and the data directory.
 # Plugins are executed in the order they are listed here.
-plugins: ['AddBasicTags', 'AddMedia', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
+plugins: ['AddBasicTags', 'AddMediaFile', 'AddNodeJson', 'AddNodeJsonld', 'AddMediaJson', 'AddMediaJsonld', 'AddFedoraTurtle']
 
 # Used by the 'AddFedoraTurtle' plugin.
 fedora_base_url: 'http://localhost:8080/fcrepo/rest/'
@@ -72,6 +72,11 @@ drupal_media_tags: ['/taxonomy/term/16']
 # named 'media_use_summary.tsv' that lists all the media files plus the taxonomy
 # name corresponding to the 'drupal_media_tags' list. Default is false.
 include_media_use_list: true
+
+# Used by the 'AddMediaFile' plugin.
+# check_media_file_hashes will enable checking the file hash (from Drupal filehash module)
+# of the downloaded Media versus the has value in the metadata
+check_media_file_hashes: true
 
 ####################
 # Post-Bag scripts #

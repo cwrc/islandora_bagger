@@ -18,7 +18,7 @@ class GetQueueCommand extends Command
     private $params;
     private $queue_path;
 
-    public function __construct(LoggerInterface $logger = null, ParameterBagInterface $params = null)
+    public function __construct(?LoggerInterface $logger = null, ?ParameterBagInterface $params = null)
     {
         // Set in the parameters section of config/services.yaml.
         $this->params = $params;

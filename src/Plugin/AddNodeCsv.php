@@ -93,11 +93,11 @@ class AddNodeCsv extends AbstractIbPlugin
           }
         }
 
-        $csv = Writer::createFromString('');
+        $csv = Writer::fromString('');
         $csv->insertOne($header);
         // There will only be one record.
         $csv->insertOne($record);
-        $csv_string = $csv->getContent();
+        $csv_string = $csv->toString();
 
         $bag->createFile($csv_string, $this->settings['csv_output_filename']);
 
